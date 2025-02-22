@@ -84,9 +84,9 @@ void npInit(uint pin) {
   
     // Limpa buffer de pixels.
     for (uint i = 0; i < LED_COUNT; ++i) {
-        leds[i].r = 124;
-        leds[i].g = 124;
-        leds[i].b = 124;
+        leds[i].r = 16;
+        leds[i].g = 16;
+        leds[i].b = 16;
     }
 }
 

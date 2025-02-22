@@ -14,9 +14,11 @@ void Sc_changeScreen(Screen *screen, Sc_Type type) {
     }
 }
 
+
+
 Sc_Type Sc_Menu_update(Event *event, Input_t *input_buf) {
-    char options[1][12] = {
-        "NOVO EVENTO"
+    char options[2][12] = {
+       "           ", "NOVO EVENTO"
     };
     static int option = 0;
     for (int i=0; i<INPUT_BUFF_SIZE; ++i) {
@@ -25,16 +27,28 @@ Sc_Type Sc_Menu_update(Event *event, Input_t *input_buf) {
                 return SC_NEW_EVENT;
         }
         else if (input_buf[i] == IP_ANALOG_RIGHT) {
-            if (++option > 0)
+            Dp_clear();
+            if (++option > 1)
                 option = 0;
         } else if (input_buf[i] == IP_ANALOG_LEFT) {
-            if (--option < 0)
+            Dp_clear();
+            if (--option < 1)
                 option = 0;
         } else if (input_buf[i] == IP_NONE)
             break;
     }
 
     Dp_drawString(options[option], 25, DISPLAY_HEIGHT/2-4);
+    if (option == 0) {
+        Dp_drawString("  /  /    ", 25, DISPLAY_HEIGHT/4);
+        Dp_drawUInt(event->begin.tm_mday, 25 + 8, DISPLAY_HEIGHT/4, 2);
+        Dp_drawUInt(event->begin.tm_mon, 25 + 32, DISPLAY_HEIGHT/4, 2);
+        Dp_drawUInt(event->begin.tm_year, 25 + 72, DISPLAY_HEIGHT/4, 4);
+
+        Dp_drawString("  :  ", 25+24, (DISPLAY_HEIGHT*3)/4);
+        Dp_drawUInt(event->begin.tm_hour, 25 + 32, (DISPLAY_HEIGHT*3)/4, 2);
+        Dp_drawUInt(event->begin.tm_min, 25 + 58, (DISPLAY_HEIGHT*3)/4, 2);
+    }
     Dp_update();
     return SC_MENU;
 }

@@ -260,6 +260,9 @@ void Ctr_menuLoop() {
         event.end = now;
         Sc_changeScreen(&screen, screen_type);
     }
+    if (screen_type == SC_MENU) {
+        event.begin = now;
+    }
     clearInput();
 
 }

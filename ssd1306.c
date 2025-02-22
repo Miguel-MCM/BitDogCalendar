@@ -133,13 +133,17 @@ void ssd1306_draw_line(uint8_t *ssd, int x_0, int y_0, int x_1, int y_1, bool se
 }
 
 // Adquire os pixels para um caractere (de acordo com ssd1306_font.h)
-inline int ssd1306_get_font(uint8_t character)
+int ssd1306_get_font(uint8_t character)
 {
 if (character >= 'A' && character <= 'Z') {
   return character - 'A' + 1;
 }
-else if (character >= '0' && character <= '9') {
+else if (character >= '0' && character <= ':') {
   return character - '0' + 27;
+} else if (character == '/') {
+  return 38;
+} else if (character == 0xff) {
+  return 39;
 }
 else
   return 0;
@@ -241,5 +245,11 @@ void ssd1306_draw_bitmap(ssd1306_t *ssd, const uint8_t *bitmap) {
       ssd->ram_buffer[i + 1] = bitmap[i];
 
       ssd1306_send_data(ssd);
+  }
+}
+
+void ssd1306_clear(uint8_t *ssd) {
+  for (int i = 0; i < ssd1306_buffer_length - 1; i++) {
+      ssd[i + 1] = 0;
   }
 }

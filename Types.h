@@ -68,6 +68,7 @@ typedef enum Input_t {
 typedef enum Sc_Type {
     SC_MENU,
     SC_NEW_EVENT,
+    SC_NEW_EVENT_F,
     SC_SEE_EVENTS
 } Sc_Type;
 

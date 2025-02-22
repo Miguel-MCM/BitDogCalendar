@@ -86,6 +86,11 @@ void getAnalog() {
     }
 }
 
+bool repeating_timer_checkAnalog(struct repeating_timer *t) {
+    getAnalog();
+    return true;
+}
+
 void setupInput() {
     clearInput();
 
@@ -132,17 +137,28 @@ int main() {
     struct repeating_timer LM_next_hour_timer;
     add_repeating_timer_ms(LM_NEXT_HOUR_PERIOD, repeating_timer_LM_nextHour, NULL, &LM_next_hour_timer);
 
+    struct repeating_timer checkAnalog_timer;
+    add_repeating_timer_ms(500, repeating_timer_checkAnalog, NULL, &checkAnalog_timer);
+
     Dp_setup();
 
     setupInput();
 
-   Screen screen;
-   Sc_changeScreen(&screen, SC_MENU);
+    Screen screen;
+    Sc_Type screen_type = SC_MENU;
+    Sc_changeScreen(&screen, screen_type);
     
     while (true) {
-        getAnalog();
-        screen.update(&event, input_buf);
+        Sc_Type new_screen_type = screen.update(&event, input_buf);
+        if (new_screen_type != screen_type) {
+            if (new_screen_type == SC_NEW_EVENT_F) {
+                newEvent(&event);
+                new_screen_type = SC_MENU;
+            }
+            screen_type = new_screen_type;
+            Sc_changeScreen(&screen, screen_type);
+        }
         clearInput();
-        sleep_ms(1000);
+        sleep_ms(250);
     }
 }

@@ -34,6 +34,22 @@ void Dp_drawString(char *str, int16_t x, int16_t y) {
     ssd1306_draw_string(ssd, x, y, str);
 }
 
+void Dp_drawChar(char c, int16_t x, int16_t y ) {
+    ssd1306_draw_char(ssd, x, y, c);
+}
+
 void Dp_update() {
     render_on_display(ssd, &frame_area);
+}
+
+void Dp_drawUInt(uint16_t n, int16_t x, int16_t y, int8_t zero_fill) {
+    while ((zero_fill > 0) ? zero_fill-- : n) {
+        ssd1306_draw_char(ssd, x, y,'0' + (n%10));
+        x -= DISPLAY_CHAR_SIZE;
+        n /= 10;
+    }
+}
+
+void Dp_clear() {
+    ssd1306_clear(ssd);
 }

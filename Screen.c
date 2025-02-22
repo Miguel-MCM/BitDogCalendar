@@ -23,7 +23,7 @@ Sc_Type Sc_Menu_update(Event *event, Input_t *input_buf) {
     static int option = 0;
     for (int i=0; i<INPUT_BUFF_SIZE; ++i) {
         if (input_buf[i] == IP_BUTTOM_A) {
-            if (option == 0)
+            if (option == 1)
                 return SC_NEW_EVENT;
         }
         else if (input_buf[i] == IP_ANALOG_RIGHT) {

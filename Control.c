@@ -27,7 +27,7 @@ struct repeating_timer minute_check_timer;
 
 
 inline uint8_t stoi(char c) {
-    return (c>'0' && c<'9')? c-'0' : 0;
+    return (c>='0' && c<='9')? c-'0' : 0;
 }
 
 void Ctr_setup_aon_timer() {
@@ -56,6 +56,7 @@ void Ctr_setup_aon_timer() {
     init_tm.tm_min = stoi(time[3])*10 + stoi(time[4]);
     init_tm.tm_sec = stoi(time[6])*10 + stoi(time[7]);
 
+    
     
     aon_timer_start_calendar(&init_tm);
     sleep_ms(100);
@@ -201,17 +202,7 @@ void Ctrl_nextDay() {
 }
 
 bool repeating_timer_minuteCheck(struct repeating_timer *t) {
-    static int h;
-    static bool first = true;
-    if (first) {
-        h = now.tm_hour;
-        first = false;
-    }
-
-    if (h != now.tm_hour) {
-        LM_nextBlinkLed();
-        h = now.tm_hour;
-    }
+    LM_setBlinkLed(now.tm_hour);
 
     if (now.tm_hour == 0 && now.tm_min == 0) {
         Ctrl_nextDay();

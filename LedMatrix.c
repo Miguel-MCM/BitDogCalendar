@@ -21,6 +21,9 @@ uint hour_to_index[LED_COUNT] = {
     11, 10, 5, 6, 7, 8, 9, 4, 3, 2, 1, 0 // PM
 };
 
+struct repeating_timer blink_timer;
+bool repeating_timer_LM_blink(struct repeating_timer *t);
+
 void npInit(uint pin);
 void npSetLED(const uint index, const uint8_t r, const uint8_t g, const uint8_t b);
 void npWrite();
@@ -59,6 +62,9 @@ void LM_update() {
 void LM_setup() {
     npInit(LED_PIN);
     LM_nextBlinkLed();
+
+    add_repeating_timer_ms(LM_BLINK_PERIOD, repeating_timer_LM_blink, NULL,  &blink_timer);
+
 }
 
 
@@ -66,6 +72,11 @@ void LM_setup() {
 // *******************************************************************************************************
 //                                      INTERNAL
 // *******************************************************************************************************
+
+bool repeating_timer_LM_blink(struct repeating_timer *t) {
+    LM_update();
+    return true;
+}
 
 void npInit(uint pin) {
     // Cria programa PIO.

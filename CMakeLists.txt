@@ -35,7 +35,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(Final Final.c LedMatrix.c Events.c Types.c ssd1306.c Display.c Screen.c)
+add_executable(Final Final.c LedMatrix.c Events.c Types.c ssd1306.c Display.c Screen.c Control.c)
 
 pico_set_program_name(Final "Final")
 pico_set_program_version(Final "0.1")
@@ -63,6 +63,7 @@ target_link_libraries(Final
         pico_aon_timer
         hardware_i2c
         hardware_adc
+        hardware_pwm
         )
 
 pico_add_extra_outputs(Final)

@@ -37,6 +37,11 @@
 #define INPUT_BUFF_SIZE 16
 #define INPUT_CHECK_ANALOG_PERIOD 425
 
+#define BUZZER_PIN 21
+#define BUZZER_FREQ 440
+#define BUZZER_DUTTY 2048
+#define BUZZER_BEEP_TIME 1000
+
 typedef struct Color {
     uint8_t r, g, b;
 } Color;
@@ -54,6 +59,7 @@ typedef struct Event {
 
 bool Tp_timeIn(const struct tm *tm1,const struct tm *begin, const struct tm *end);
 bool Tp_timeSameDay(const struct tm *tm1, const struct tm *tm2);
+bool Tp_timeSameMin(const struct tm *tm1, const struct tm *tm2);
 
 typedef enum Input_t {
     IP_NONE,

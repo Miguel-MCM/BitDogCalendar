@@ -25,3 +25,11 @@ bool Tp_timeSameDay(const struct tm *tm1, const struct tm *tm2) {
         tm1->tm_mday == tm2->tm_mday
      );
 }
+
+bool Tp_timeSameMin(const struct tm *tm1, const struct tm *tm2) {
+    return (
+        Tp_timeSameDay(tm1, tm2) &&
+        tm1->tm_hour == tm2->tm_hour &&
+        tm1->tm_min == tm2->tm_min
+    );
+}

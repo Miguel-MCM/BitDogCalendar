@@ -38,15 +38,19 @@
 #define INPUT_CHECK_ANALOG_PERIOD 425
 
 #define BUZZER_PIN 21
-#define BUZZER_FREQ 440
-#define BUZZER_DUTTY 2048
+#define BUZZER_FREQ 1760
+#define BUZZER_DUTTY 4096
 #define BUZZER_BEEP_TIME 1000
+
+#define MAX_DAY_EVENTS 24
 
 typedef struct Color {
     uint8_t r, g, b;
 } Color;
 
-typedef uint8_t EventIndex_t;
+bool Tp_ColorEq(const Color *c1, const Color *c2);
+
+typedef int8_t EventIndex_t;
 
 typedef struct Event {
     char name[MAX_EVENT_NAME_LEN];

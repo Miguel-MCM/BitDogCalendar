@@ -19,7 +19,8 @@ Event event = {
     .name = " "
 };
 
-Event dayEvents[24];
+Event dayEvents[MAX_DAY_EVENTS];
+uint8_t numDayEvents = 0;
 
 struct repeating_timer checkAnalog_timer;
 struct repeating_timer minute_check_timer;
@@ -57,6 +58,7 @@ void Ctr_setup_aon_timer() {
 
     
     aon_timer_start_calendar(&init_tm);
+    sleep_ms(100);
     aon_timer_get_time_calendar(&now);
 }
 
@@ -164,33 +166,72 @@ void Ctr_buzzerBeep(uint32_t time) {
     add_alarm_in_ms(time, alarm_stopBuzzerBeep, NULL, false);
 }
 
-void Ctr_addEvent(Event *event) {
-    Ev_newEvent(event);
-    if (Tp_timeSameDay(&(event->begin), &now)) {
-        int h;
-        for (h=1; h<=24; ++h) {
-            if (h >= event->begin.tm_hour && h <= event->end.tm_hour) {
-                LM_setHourColor(h, event->color.r, event->color.g, event->color.b);
-            }
+void Ctr_setLMEventColor(struct tm *begin, struct tm *end, Color color) {
+    for (int h=1; h<=24; ++h) {
+        if (h >= begin->tm_hour && h <= end->tm_hour) {
+            LM_setHourColor(h, color.r, color.g, color.b);
+        }
+    }
+}
+
+void Ctr_addDayEvent(Event *ev) {
+    if (numDayEvents < MAX_DAY_EVENTS) {
+        Ctr_setLMEventColor(&(ev->begin), &(ev->end), ev->color);
+        dayEvents[numDayEvents++] = *ev;
+    }
+}
+
+void Ctr_addEvent(Event *ev) {
+    Ev_newEvent(ev);
+    if (Tp_timeSameDay(&(ev->begin), &now)) {
+        Ctr_addDayEvent(ev);
+    }
+}
+
+void Ctrl_nextDay() {
+    numDayEvents = 0;
+
+    Event ev;
+    int i = 0;
+    while (Ev_getEvent(&ev, i)) {
+        if (Tp_timeSameDay(&(ev.begin), &now)) {
+            Ctr_addDayEvent(&ev);
         }
     }
 }
 
 bool repeating_timer_minuteCheck(struct repeating_timer *t) {
-    for (int i=0; i<24; i++) {
-        if (Tp_timeSameMin(&(dayEvents[i].begin), &now)) {
+    static int h;
+    static bool first = true;
+    if (first) {
+        h = now.tm_hour;
+        first = false;
+    }
+
+    if (h != now.tm_hour) {
+        LM_nextBlinkLed();
+        h = now.tm_hour;
+    }
+
+    if (now.tm_hour == 0 && now.tm_min == 0) {
+        Ctrl_nextDay();
+    }
+
+    for (int i=0; i<numDayEvents; i++) {
+        if (Tp_timeSameMin(&(dayEvents[i].begin), &now) && dayEvents[i].alert) {
             Ctr_buzzerBeep(BUZZER_BEEP_TIME);
         }
     }
 }
 
 void Ctr_setupAll() {
-    LM_setup();
-    Dp_setup();
     Ctr_setup_aon_timer();
+    Dp_setup();
+    LM_setup();
+    LM_setBlinkLed(now.tm_hour);
     Ctr_setupInput();
     Ctr_setupBuzzer();
-
+    
     add_repeating_timer_ms(60*1000, repeating_timer_minuteCheck, NULL, &minute_check_timer);
 }
 
@@ -200,14 +241,13 @@ void Ctr_menuLoop() {
     static Screen screen;
     static Sc_Type screen_type = SC_MENU;
     static bool first = true;
+    aon_timer_get_time_calendar(&now);
     if (first) {
         Sc_changeScreen(&screen, screen_type);
         first = false;
         event.begin = now;
         event.end = now;
     }
-    
-    aon_timer_get_time_calendar(&now);
 
     Sc_Type new_screen_type = screen.update(&event, input_buf);
     if (new_screen_type != screen_type) {

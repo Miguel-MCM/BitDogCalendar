@@ -33,3 +33,11 @@ bool Tp_timeSameMin(const struct tm *tm1, const struct tm *tm2) {
         tm1->tm_min == tm2->tm_min
     );
 }
+
+bool Tp_ColorEq(const Color *c1, const Color *c2) {
+    return (
+        c1->r == c2->r &&
+        c1->g == c2->g &&
+        c1->b == c2->b
+    );
+}

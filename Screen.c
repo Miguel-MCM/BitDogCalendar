@@ -214,6 +214,7 @@ Sc_Type Sc_New_Event_update(Event *event, Input_t *input_buf) {
     case 0:
         Dp_drawString("Inicio", 32, 0);
         stage += Sc_New_Event_select_time(&(event->begin), input_buf);
+        event->end = event->begin;
         break;
     case 1:
         Dp_drawString("Fim", 32, 0);
@@ -221,7 +222,6 @@ Sc_Type Sc_New_Event_update(Event *event, Input_t *input_buf) {
         break;
     case 2:
         stage += Sc_New_Event_insertName(event, input_buf);
-        event->end = event->begin;
         break;
     case 3:
         stage += Sc_New_Event_setColor(event, input_buf);

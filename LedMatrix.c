@@ -30,6 +30,9 @@ void npWrite();
 
 void LM_setHourColor(const uint hour, const uint8_t r, const uint8_t g, const uint8_t b) {
     npSetLED(hour_to_index[hour], r, g, b);
+    if ((r || g || b) && hour == blinking_hour) {
+        blinking_led_color = leds[hour_to_index[blinking_hour]];
+    }
 }
 
 void LM_nextBlinkLed() {

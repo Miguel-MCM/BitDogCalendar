@@ -194,7 +194,7 @@ void Ctrl_nextDay() {
 
     Event ev;
     int i = 0;
-    while (Ev_getEvent(&ev, i)) {
+    while (Ev_getEvent(&ev, i++)) {
         if (Tp_timeSameDay(&(ev.begin), &now)) {
             Ctr_addDayEvent(&ev);
         }
@@ -202,7 +202,7 @@ void Ctrl_nextDay() {
 }
 
 bool repeating_timer_minuteCheck(struct repeating_timer *t) {
-    LM_setBlinkLed(now.tm_hour);
+    LM_setBlinkLed((now.tm_hour) ? now.tm_hour : 24);
 
     if (now.tm_hour == 0 && now.tm_min == 0) {
         Ctrl_nextDay();
@@ -225,8 +225,6 @@ void Ctr_setupAll() {
     
     add_repeating_timer_ms(60*1000, repeating_timer_minuteCheck, NULL, &minute_check_timer);
 }
-
-
 
 void Ctr_menuLoop() {
     static Screen screen;

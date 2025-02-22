@@ -157,7 +157,7 @@ int main() {
     Event event = {
         .name = "\0",
         .alert = true,
-        .color = {0, 255, 0},
+        .color = {255, 255, 255},
         .begin = now,
         .end = now
     };
@@ -169,7 +169,7 @@ int main() {
     add_repeating_timer_ms(LM_NEXT_HOUR_PERIOD, repeating_timer_LM_nextHour, NULL, &LM_next_hour_timer);
 
     struct repeating_timer checkAnalog_timer;
-    add_repeating_timer_ms(500, repeating_timer_checkAnalog, NULL, &checkAnalog_timer);
+    add_repeating_timer_ms(INPUT_CHECK_ANALOG_PERIOD, repeating_timer_checkAnalog, NULL, &checkAnalog_timer);
 
     Dp_setup();
 

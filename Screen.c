@@ -15,8 +15,8 @@ void Sc_changeScreen(Screen *screen, Sc_Type type) {
 }
 
 Sc_Type Sc_Menu_update(Event *event, Input_t *input_buf) {
-    char options[2][12] = {
-        "NOVO EVENTO", "VER EVENTOS "
+    char options[1][12] = {
+        "NOVO EVENTO"
     };
     static int option = 0;
     for (int i=0; i<INPUT_BUFF_SIZE; ++i) {
@@ -25,11 +25,11 @@ Sc_Type Sc_Menu_update(Event *event, Input_t *input_buf) {
                 return SC_NEW_EVENT;
         }
         else if (input_buf[i] == IP_ANALOG_RIGHT) {
-            if (++option > 1)
+            if (++option > 0)
                 option = 0;
         } else if (input_buf[i] == IP_ANALOG_LEFT) {
             if (--option < 0)
-                option = 1;
+                option = 0;
         } else if (input_buf[i] == IP_NONE)
             break;
     }
@@ -221,6 +221,7 @@ Sc_Type Sc_New_Event_update(Event *event, Input_t *input_buf) {
         break;
     case 2:
         stage += Sc_New_Event_insertName(event, input_buf);
+        event->end = event->begin;
         break;
     case 3:
         stage += Sc_New_Event_setColor(event, input_buf);

@@ -35,6 +35,7 @@
 #define ADC_GPIO_INPUT(pin) ((pin)-26)
 
 #define INPUT_BUFF_SIZE 16
+#define INPUT_CHECK_ANALOG_PERIOD 425
 
 typedef struct Color {
     uint8_t r, g, b;
@@ -68,8 +69,7 @@ typedef enum Input_t {
 typedef enum Sc_Type {
     SC_MENU,
     SC_NEW_EVENT,
-    SC_NEW_EVENT_F,
-    SC_SEE_EVENTS
+    SC_NEW_EVENT_F
 } Sc_Type;
 
 typedef struct Screen {

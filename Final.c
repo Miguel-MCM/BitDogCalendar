@@ -114,22 +114,53 @@ void setupInput() {
     adc_gpio_init(ANALOGIC_Y_PIN);
 }
 
+inline uint8_t stoi(char c) {
+    return (c>'0' && c<'9')? c-'0' : 0;
+}
+
+void setup_aon_timer() {
+    char date[] = __DATE__;
+    struct tm init_tm;
+
+    init_tm.tm_year = stoi(date[7])*1000 + stoi(date[8])*100 + stoi(date[9])*10 + stoi(date[10]);
+    init_tm.tm_mday = stoi(date[4])*10 + stoi(date[5]);
+    
+    if (date[0] == 'J' && date[1] == 'a' && date[2] == 'n') init_tm.tm_mon = 1;
+    else if (date[0] == 'F' && date[1] == 'e' && date[2] == 'b') init_tm.tm_mon = 2;
+    else if (date[0] == 'M' && date[1] == 'a' && date[2] == 'r') init_tm.tm_mon = 3;
+    else if (date[0] == 'A' && date[1] == 'p' && date[2] == 'r') init_tm.tm_mon = 4;
+    else if (date[0] == 'M' && date[1] == 'a' && date[2] == 'y') init_tm.tm_mon = 5;
+    else if (date[0] == 'J' && date[1] == 'u' && date[2] == 'n') init_tm.tm_mon = 6;
+    else if (date[0] == 'J' && date[1] == 'u' && date[2] == 'l') init_tm.tm_mon = 7;
+    else if (date[0] == 'A' && date[1] == 'u' && date[2] == 'g') init_tm.tm_mon = 8;
+    else if (date[0] == 'S' && date[1] == 'e' && date[2] == 'p') init_tm.tm_mon = 9;
+    else if (date[0] == 'O' && date[1] == 'c' && date[2] == 't') init_tm.tm_mon = 10;
+    else if (date[0] == 'N' && date[1] == 'o' && date[2] == 'v') init_tm.tm_mon = 11;
+    else if (date[0] == 'D' && date[1] == 'e' && date[2] == 'c') init_tm.tm_mon = 12;
+    else init_tm.tm_mon = 0;
+
+    char time[] = __TIME__;
+    init_tm.tm_hour = stoi(time[0])*10 + stoi(time[1]);
+    init_tm.tm_min = stoi(time[3])*10 + stoi(time[4]);
+    init_tm.tm_sec = stoi(time[6])*10 + stoi(time[7]);
+
+    aon_timer_start_calendar(&init_tm);
+}
+
 int main() {
     stdio_init_all();
     LM_setup();
-    aon_timer_start_with_timeofday();
+    setup_aon_timer();
 
     aon_timer_get_time_calendar(&now);
 
     Event event = {
-        .name = "Oi",
+        .name = "\0",
         .alert = true,
         .color = {0, 255, 0},
-        .begin = {.tm_hour = 21, .tm_mday=now.tm_mday, .tm_mon=now.tm_mon, .tm_year=now.tm_year},
-        .end = {.tm_hour = 22, .tm_mday=now.tm_mday, .tm_mon=now.tm_mon, .tm_year=now.tm_year}
+        .begin = now,
+        .end = now
     };
-    
-    newEvent(&event);
 
     struct repeating_timer LM_blink_timer;
     add_repeating_timer_ms(LM_BLINK_PERIOD, repeating_timer_LM_blink, NULL,  &LM_blink_timer);
@@ -149,6 +180,7 @@ int main() {
     Sc_changeScreen(&screen, screen_type);
     
     while (true) {
+        aon_timer_get_time_calendar(&now);
         Sc_Type new_screen_type = screen.update(&event, input_buf);
         if (new_screen_type != screen_type) {
             if (new_screen_type == SC_NEW_EVENT_F) {
@@ -156,6 +188,8 @@ int main() {
                 new_screen_type = SC_MENU;
             }
             screen_type = new_screen_type;
+            event.begin = now;
+            event.end = now;
             Sc_changeScreen(&screen, screen_type);
         }
         clearInput();

@@ -200,11 +200,11 @@ int8_t Sc_New_Event_setColor(Event *event, Input_t *input_buf) {
     Dp_drawString("R: ", 0, 0);
     Dp_drawString("G: ", 0, DISPLAY_HEIGHT/2 - DISPLAY_CHAR_SIZE/2);
     Dp_drawString("B: ", 0, DISPLAY_HEIGHT- DISPLAY_CHAR_SIZE);
-    *(ptrs[selected]) = getInputInt(input_buf, 0, 255, first, *ptrs[selected]);
+    *(ptrs[selected]) = getInputInt(input_buf, 0, 1, first, (*ptrs[selected] > 1)?1:*ptrs[selected]);
 
-    if (selected != 0 || (selected == 0 && blink)) Dp_drawUInt(*ptrs[0], 4*DISPLAY_CHAR_SIZE, 0, 3);
-    if (selected != 1 || (selected == 1 && blink)) Dp_drawUInt(*ptrs[1], 4*DISPLAY_CHAR_SIZE, DISPLAY_HEIGHT/2 - DISPLAY_CHAR_SIZE/2, 3);
-    if (selected != 2 || (selected == 2 && blink)) Dp_drawUInt(*ptrs[2], 4*DISPLAY_CHAR_SIZE, DISPLAY_HEIGHT- DISPLAY_CHAR_SIZE, 3);
+    if (selected != 0 || (selected == 0 && blink)) Dp_drawUInt(*ptrs[0], 2*DISPLAY_CHAR_SIZE, 0, 1);
+    if (selected != 1 || (selected == 1 && blink)) Dp_drawUInt(*ptrs[1], 2*DISPLAY_CHAR_SIZE, DISPLAY_HEIGHT/2 - DISPLAY_CHAR_SIZE/2, 1);
+    if (selected != 2 || (selected == 2 && blink)) Dp_drawUInt(*ptrs[2], 2*DISPLAY_CHAR_SIZE, DISPLAY_HEIGHT- DISPLAY_CHAR_SIZE, 1);
 
     blink = !blink;
     for (int i=0; i<INPUT_BUFF_SIZE; ++i) {

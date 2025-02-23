@@ -15,7 +15,7 @@ Input_t input_buf[INPUT_BUFF_SIZE] = {IP_NONE};
 struct tm now;
 Event event = {
     .alert = false,
-    .color = {255,255,255},
+    .color = {1,1,1},
     .name = " "
 };
 
@@ -52,6 +52,7 @@ void Ctr_setup_aon_timer() {
     else init_tm.tm_mon = 0;
 
     char time[] = __TIME__;
+    //char time[] = "12:59:50";
     init_tm.tm_hour = stoi(time[0])*10 + stoi(time[1]);
     init_tm.tm_min = stoi(time[3])*10 + stoi(time[4]);
     init_tm.tm_sec = stoi(time[6])*10 + stoi(time[7]);
@@ -213,6 +214,7 @@ bool repeating_timer_minuteCheck(struct repeating_timer *t) {
             Ctr_buzzerBeep(BUZZER_BEEP_TIME);
         }
     }
+    return true;
 }
 
 void Ctr_setupAll() {

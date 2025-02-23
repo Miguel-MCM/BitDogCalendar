@@ -43,6 +43,12 @@
         "pio.h": "c",
         "time.h": "c",
         "pico.h": "c",
-        "types.h": "c"
+        "types.h": "c",
+        "control.h": "c",
+        "aon_timer.h": "c",
+        "screen.h": "c",
+        "ledmatrix.h": "c",
+        "events.h": "c",
+        "display.h": "c"
     }
 }
